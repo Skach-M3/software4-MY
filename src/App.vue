@@ -1,17 +1,19 @@
 <template>
   <div id="app">
-<!--    <nav>-->
-<!--      <router-link to="/">Home</router-link> |-->
-<!--      <router-link to="/about">About</router-link>-->
-<!--    </nav>-->
-    <router-view v-if="isRouterAlive"/>
+    <!--    <nav>-->
+    <!--      <router-link to="/">Home</router-link> |-->
+    <!--      <router-link to="/about">About</router-link>-->
+    <!--    </nav>-->
+    <router-view v-if="isRouterAlive" />
   </div>
 </template>
 
 <script>
+import { log } from '@antv/g2plot/lib/utils';
+import { getRequest } from './api/user';
 import { mapActions } from 'vuex';
 export default {
-  data () {
+  data() {
     return {
       isRouterAlive: true
     }
@@ -21,14 +23,38 @@ export default {
     this.init();
   },
 
-  methods:{
-    ...mapActions(["getDataList","getTaskList","getModelList"]),
+  mounted() {
+
+  },
+
+  methods: {
+    ...mapActions(["getDataList", "getTaskList", "getModelList"]),
     init() {
       //获取所有数据表信息
       this.getDataList();
       //因为用户登录后只展示登录用户所创建的任务，所以getTaskList在登录后跳转组件时调用
       //this.getTaskList();
       this.getModelList();
+      console.log("search="+location.search);
+      let url = location.search;
+      let urlParam = new URLSearchParams(url);
+      let repkeyValue = urlParam.get("repKey");
+      console.log("截取后="+ repkeyValue);
+      getRequest(`/login?repKey=${repkeyValue}`).then((resp) => {
+        if (resp) {
+          console.log("后台回复的code" + resp.code);
+          console.log("后台回复的UserName" + resp.data.respBody.UserName);
+          console.log("后台回复的UserCode" + resp.data.respBody.UserCode);
+          if (resp.code == "200") {
+            sessionStorage.setItem("username", resp.data.respBody.UserName);
+            sessionStorage.setItem("userid", resp.data.respBody.UserCode);
+            this.$router.push("/sideBar/SoftwareIntro");
+          }
+        } else {
+          this.$message.error("用户不存在或者密码错误");
+        }
+      });
+
     }
   }
 }
@@ -42,43 +68,56 @@ export default {
   /* //text-align: center; */
   color: #2c3e50;
 }
-*{
-  margin:0;
-  padding:0;
-  border:0
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0
 }
-html,body{
+
+html,
+body {
   height: 100%;
 }
+
 /* //注明的样式 */
-.explain{
+.explain {
   color: red;
   font-size: 12px;
 }
+
 /* //表单头的样式 */
 .whiteItem .el-form-item__label {
   color: #fff;
 }
+
 .title {
   font-size: 26px;
   margin: 10px auto 10px auto;
   text-align: center;
   font-weight: bold;
 }
-.caret-wrapper{
+
+.caret-wrapper {
   padding: 0px;
 }
-.InfoData{
-  width: 100%; margin: 10px auto;padding: 0;
+
+.InfoData {
+  width: 100%;
+  margin: 10px auto;
+  padding: 0;
 }
-.el-table{
-  ::v-deep th{
+
+.el-table {
+  ::v-deep th {
     padding: 0;
   }
+
   ::v-deep td {
     padding: 0;
   }
 }
+
 #nav {
   padding: 30px;
 
@@ -101,6 +140,5 @@ html,body{
 //}
 //html,body,#app {
 //  height: 100%;
-//} */
-</style>
+//} */</style>
 

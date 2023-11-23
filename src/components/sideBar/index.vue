@@ -26,7 +26,7 @@
       <el-container>
         <el-aside width="200px" class="side">
           <el-menu
-            default-active="1"
+            default-active="/sideBar/SoftwareIntro"
             router
             class="el-menu-vertical-demo"
             background-color="#071135"

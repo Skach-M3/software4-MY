@@ -16,15 +16,19 @@ import SoftwareIntro from "@/components/tab/SoftwareIntro.vue";
 Vue.use(VueRouter)
 
 const routes = [
+  // {
+  //   path: "/",
+  //   name: "LogIn",
+  //   component: Login,
+  // },
+  // {
+  //   path: "/register",
+  //   name: "Register",
+  //   component: Register,
+  // },
   {
     path: "/",
-    name: "LogIn",
-    component: Login,
-  },
-  {
-    path: "/register",
-    name: "Register",
-    component: Register,
+    redirect: "/sideBar/SoftwareIntro",
   },
   {
      path: "/sideBar",
@@ -91,11 +95,14 @@ router.beforeEach((to, from, next) => {
   //next是一个函数，表示放行
   //next() 放行 next('/login')强制跳转
 
-  if (to.path === '/') return next();
-  if(to.path==='/register') return next();
+  // if (to.path === '/') return next();
+  // if(to.path==='/register') return next();
   //获取token
-  const uid = window.sessionStorage.getItem('userid');
-  if (!uid) return next('/');
-  next();
+  const userid = window.sessionStorage.getItem('userid');
+  if (!userid) {
+    return false;
+  }else{
+    next();
+  }
 });
 export default router
